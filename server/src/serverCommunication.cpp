@@ -68,6 +68,12 @@ ServerCommunication::ServerCommunication(int port) {
   strcpy(fname, buffer);
   printf("%s\n", fname);
 
+  if (FILE *file = fopen(fname, "r")) {
+        fclose(file);
+    } else {
+        throwError("[ServerCommunication::ServerCommunication]: File not found");
+    }
+
   status = recvfrom(
     socketDesc,
     buffer,
