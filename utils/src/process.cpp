@@ -167,7 +167,7 @@ int Process::upload(string fileName, ClientUser* user, int port, string host) {
       memset(sendChunck.chunck, 0, CHUNCK_SIZE);
       fread(sendChunck.chunck, CHUNCK_SIZE, 1, file);
       itr++;
-      sendChunck.chunckId++;
+      sendChunck.chunckId = sendChunck.chunckId%1000 +1;
     }
   }
 
