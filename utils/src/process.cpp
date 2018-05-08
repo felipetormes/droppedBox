@@ -9,6 +9,7 @@
 #include <unistd.h>
 #include <string.h>
 #include <pwd.h>
+#include <sys/stat.h>
 
 #include "../headers/process.hpp"
 #include "../headers/ui.hpp"
@@ -209,7 +210,12 @@ int Process::listClient(ClientUser* user, int port, string host, int socketDesc)
 }
 
 int Process::getSyncDir(ClientUser* user) {
-  cout << "It has to be implemented" << endl;
+  struct stat st;
+  string homePath = getpwuid(getuid())->pw_dir;
+  string userPath = homePath + "/sync_dir_" + user->getUserId();
+
+  if(stat(homePath.c_str(),&st) == 0)
+          printf("User directory exists\n");
 }
 
 int Process::exitApp(ClientUser* user) {
