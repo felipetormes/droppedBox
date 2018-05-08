@@ -66,13 +66,10 @@ void *inotifyEvent(void*) {
         if (IN_MODIFY) {
 
         }
-        if (event->mask & IN_DELETE) {
+        if (event->mask & IN_DELETE || IN_MOVED_FROM) {
 
         }
-        if (IN_MOVED_FROM) {
-
-        }
-        if (IN_MOVED_TO) {
+        if (IN_MOVED_TO) { // Check if it will be the same as create
 
         }
         if (IN_OPEN || IN_ACCESS) {
