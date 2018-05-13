@@ -74,6 +74,7 @@ int Process::upload(string fileName, ClientUser* user, int port, string host, in
   struct sockaddr_in from;
   struct hostent *server;
   Datagram sendChunck;
+  UserInfo userInfo = {};
   string homePath = getpwuid(getuid())->pw_dir;
   string filePath = homePath + "/sync_dir_" + user->getUserId() + "/" + fileName;
   unsigned int size;
@@ -94,10 +95,13 @@ int Process::upload(string fileName, ClientUser* user, int port, string host, in
   serverAddress.sin_addr = *((struct in_addr *)server->h_addr);
   bzero(&(serverAddress.sin_zero), BYTE_IN_BITS);
 
+  strcpy(userInfo.message, UPLOAD);
+  user->getUserId().copy(userInfo.userId, user->getUserId().length(), 0);
+
   status = sendto(
     socketDesc,
-    UPLOAD,
-    CHUNCK_SIZE,
+    &userInfo,
+    sizeof(userInfo),
     0,
     (const struct sockaddr *) &serverAddress,
     sizeof(struct sockaddr_in)
@@ -152,9 +156,6 @@ int Process::upload(string fileName, ClientUser* user, int port, string host, in
       throwError("[Process::upload]: Error on sending message");
     }
 
-    //printf("%s\n", sendChunck.chunck);
-    printf("%d\n", sendChunck.chunckId);
-
     status = recvfrom(
       socketDesc,
       ack,
@@ -169,6 +170,7 @@ int Process::upload(string fileName, ClientUser* user, int port, string host, in
 
     //printf("%s\n", ack);
     //printf("%d\n", atoi(ack));
+
 
     if(atoi(ack) == sendChunck.chunckId) {
       memset(sendChunck.chunck, 0, CHUNCK_SIZE);
@@ -209,6 +211,7 @@ int Process::download(string fileName, ClientUser* user, string host, int port, 
   struct sockaddr_in from;
   struct hostent *server;
   Datagram receiveChunck;
+  UserInfo userInfo = {};
   string homePath = getpwuid(getuid())->pw_dir;
   string filePath = homePath + "/sync_dir_" + user->getUserId() + "/" + fileName;
   char str[10], ack[10], size[CHUNCK_SIZE];
@@ -228,10 +231,13 @@ int Process::download(string fileName, ClientUser* user, string host, int port, 
   serverAddress.sin_addr = *((struct in_addr *)server->h_addr);
   bzero(&(serverAddress.sin_zero), BYTE_IN_BITS);
 
+  strcpy(userInfo.message, DOWNLOAD);
+  user->getUserId().copy(userInfo.userId, user->getUserId().length(), 0);
+
   status = sendto(
     socketDesc,
-    DOWNLOAD,
-    CHUNCK_SIZE,
+    &userInfo,
+    sizeof(userInfo),
     0,
     (const struct sockaddr *) &serverAddress,
     sizeof(struct sockaddr_in)
@@ -326,15 +332,15 @@ int Process::download(string fileName, ClientUser* user, string host, int port, 
 }
 
 int Process::listServer(ClientUser* user, int port, string host, int socketDesc) {
-  string clientRequest = "[Client Request]: List files on the server side";
-  writeToSocket(clientRequest, socketDesc, host, port);
+  //string clientRequest = "[Client Request]: List files on the server side";
+  //writeToSocket(clientRequest, socketDesc, host, port);
   Folder* procFolder = new Folder();
   procFolder->listFiles(SERVER_LIST, user->getUserId());
 }
 
 int Process::listClient(ClientUser* user, int port, string host, int socketDesc) {
-  string clientRequest = "[Client Request]: List files on the client side";
-  writeToSocket(clientRequest, socketDesc, host, port);
+  //string clientRequest = "[Client Request]: List files on the client side";
+  //writeToSocket(clientRequest, socketDesc, host, port);
   Folder* procFolder = new Folder();
   procFolder->listFiles(CLIENT_LIST, user->getUserId());
 }

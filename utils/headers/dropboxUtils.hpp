@@ -1,5 +1,6 @@
 #pragma once
 #include <string>
+using namespace std;
 
 #define UNDEF -1 // not specified informationC
 #define INIT 0 // for initialization of parameters
@@ -45,6 +46,11 @@ typedef struct datagram {
    int  chunckId;
    char  chunck[CHUNCK_SIZE];
 } Datagram;
+
+typedef struct userInfo {
+   char  userId[CHUNCK_SIZE/8];
+   char  message[CHUNCK_SIZE*7/8];
+} UserInfo;
 
 /*  IN_CREATE – File/directory created in watched directory
     IN_DELETE – File/directory deleted from watched directory
