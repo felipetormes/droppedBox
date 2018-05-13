@@ -1,4 +1,7 @@
+#pragma once
+
 #include <string>
+#include <thread>
 #include "../../utils/headers/communication.hpp"
 #include "clientUser.hpp"
 
@@ -16,4 +19,7 @@ class ClientCommunication : public Communication {
     ClientCommunication(char* ip, int port);
     int loginServer(char* ip, int port, ClientUser* user);
     bool closeSession ();
+    int getPort();
+    int getSocketDescriptor();
+    char* getIp();
 };

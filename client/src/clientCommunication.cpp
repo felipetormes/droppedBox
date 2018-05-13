@@ -28,6 +28,17 @@ using namespace std;
      sendto
      recvfrom
    close socket */
+ClientCommunication::getPort() {
+  return this.port;
+}
+
+ClientCommunication::getSocketDescriptor() {
+  return this.socketDescriptor
+}
+
+ClientCommunication::getIp() {
+  return this->ip;
+}
 
 ClientCommunication::ClientCommunication() {
   this->port =  PORT;
@@ -62,9 +73,6 @@ int ClientCommunication::loginServer(char* ip, int port, ClientUser* user) {
   struct hostent *host;
   string clientFolderPath;
   string serverFolderPath;
-
-  // Thread for synchronization
-  pthread_t syn_th;
 
   char buffer[BUFFER_SIZE];
   fflush(stdin);

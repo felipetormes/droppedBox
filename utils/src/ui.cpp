@@ -1,8 +1,8 @@
 #include <iostream>
 #include <string>
 #include <vector>
-
 #include "stdlib.h"
+
 #include "../headers/ui.hpp"
 
 using namespace std;
@@ -38,11 +38,12 @@ vector<string> parseUserCommand(const string& input, const string& separator) {
 }
 
 
-vector<string> getUserCommand() {
+ClientAction getUserCommand() {
   vector<string> commandWithParameter;
   string wholeCommand;
   cout << endl << PREFIX << " ";
   getline(cin, wholeCommand);
   commandWithParameter = parseUserCommand(wholeCommand, " ");
-  return commandWithParameter;
+  ClientAction action(commandWithParameter[0], commandWithParameter[1]);
+  return action;
 }

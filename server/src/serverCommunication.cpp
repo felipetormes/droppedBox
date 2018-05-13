@@ -34,7 +34,7 @@ void ServerCommunication::serverComm(int port) {
   //struct datagram receiveChunck;
 
   // Open socket
-	socketDesc = openSocket();
+  socketDesc = openSocket();
 
   serverAddress.sin_family = AF_INET;
   serverAddress.sin_port = htons(port);
@@ -42,41 +42,24 @@ void ServerCommunication::serverComm(int port) {
   bzero(&(serverAddress.sin_zero), BYTE_IN_BITS);
 
   if ( bind (
-      socketDesc,
-      (struct sockaddr *) &serverAddress,
-      sizeof(struct sockaddr)
-    ) < 0
-  ) {
-    throwError("[ServerCommunication::ServerCommunication]: Error on on binding");
-  }
+    socketDesc,
+    (struct sockaddr *) &serverAddress,
+    sizeof(struct sockaddr)
+  ) < 0
+) {
+  throwError("[ServerCommunication::ServerCommunication]: Error on on binding");
+}
 
-  clilen = sizeof(struct sockaddr_in);
-  sprintf(buffer, "%s", "message");
+clilen = sizeof(struct sockaddr_in);
+sprintf(buffer, "%s", "message");
 
-  Folder* folder = new Folder("");
-  folder->createFolder("db/");
-  folder->createFolder("db/clients");
+Folder* folder = new Folder("");
+folder->createFolder("db/");
+folder->createFolder("db/clients");
 
-  while (TRUE) {
-    do {
-  		status = recvfrom(
-        socketDesc,
-        buffer,
-        CHUNCK_SIZE,
-        MSG_OOB,
-        (struct sockaddr *) &clientAddress,
-        &clilen
-      );
-  		if (status < 0) {
-        throwError("[ServerCommunication::ServerCommunication]: Error on recvfrom");
-      }
-      if (strcmp(buffer, UPLOAD) != 0 && strcmp(buffer, DOWNLOAD) != 0) {
-        cout << buffer << endl;
-      }
-    } while (strcmp(buffer, UPLOAD) != 0 && strcmp(buffer, DOWNLOAD) != 0);
-
-  if (strcmp(buffer, UPLOAD) == 0) {
-  	status = recvfrom(
+while (TRUE) {
+  do {
+    status = recvfrom(
       socketDesc,
       buffer,
       CHUNCK_SIZE,
@@ -84,7 +67,24 @@ void ServerCommunication::serverComm(int port) {
       (struct sockaddr *) &clientAddress,
       &clilen
     );
-  	if (status < 0) {
+    if (status < 0) {
+      throwError("[ServerCommunication::ServerCommunication]: Error on recvfrom");
+    }
+    if (strcmp(buffer, UPLOAD) != 0 && strcmp(buffer, DOWNLOAD) != 0) {
+      cout << buffer << endl;
+    }
+  } while (strcmp(buffer, UPLOAD) != 0 && strcmp(buffer, DOWNLOAD) != 0);
+
+  if (strcmp(buffer, UPLOAD) == 0) {
+    status = recvfrom(
+      socketDesc,
+      buffer,
+      CHUNCK_SIZE,
+      MSG_OOB,
+      (struct sockaddr *) &clientAddress,
+      &clilen
+    );
+    if (status < 0) {
       throwError("Error on recvfrom");
     }
 
@@ -99,7 +99,7 @@ void ServerCommunication::serverComm(int port) {
       (struct sockaddr *) &clientAddress,
       &clilen
     );
-  	if (status < 0) {
+    if (status < 0) {
       throwError("Error on recvfrom");
     }
 
@@ -251,9 +251,9 @@ void ServerCommunication::serverComm(int port) {
 
     memset(sendChunck.chunck, 0, CHUNCK_SIZE);
     fclose(fp);
-    }
+  }
 }
 
-  close(socketDesc);
+close(socketDesc);
 
 }

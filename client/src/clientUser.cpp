@@ -7,6 +7,24 @@
 
 using namespace std;
 
+ClientUser::() {
+
+}
+
+ClientUser::addClientAction(ClientAction action) {
+  this.actionsMutex.lock();
+  this.actionsQueue.push(action);
+  this.actionsMutex.unlock();
+}
+
+ClientUser::getClientAction() {
+  ClientAction action;
+  this.actionsMutex.lock();
+  action = this.actionsQueue.pop();
+  this.actionsMutex.unlock();
+  return action;
+}
+
 ClientUser::ClientUser(string userId, Folder *userFolder) {
   this->userId = userId;
   this->isSync = false;
@@ -60,4 +78,12 @@ void ClientUser::sync() {
 bool ClientUser::isSynchronized() {
   unique_lock<mutex> lck(this->accessSync);
   return this->isSync;
+}
+
+string ClientAction::getCommand() {
+  return this->command;
+}
+
+string ClientAction::getParameter() {
+  return this->parameter;
 }

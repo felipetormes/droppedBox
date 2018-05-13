@@ -1,4 +1,6 @@
 #include <iostream>
+#include <thread>
+
 #include "../headers/dropboxServer.hpp"
 #include "../headers/serverCommunication.hpp"
 #include "../../settings/config.hpp"
@@ -27,7 +29,11 @@ int main (int argc, char* argv[]) {
     throwError("[Server]: Invalid use of the application");
   }
 
+  // while(TRUE){
   ServerCommunication* s = new ServerCommunication();
   s->serverComm(port);
+  //std::thread client = (&s->serverComm, port);
+  // }
+
   return 0;
 }

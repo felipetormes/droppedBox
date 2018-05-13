@@ -1,6 +1,8 @@
 #include <iostream>
 #include <string>
 #include <unistd.h>
+#include <thread>
+
 #include "string.h"
 #include "../headers/dropboxClient.hpp"
 #include "../headers/clientCommunication.hpp"
@@ -16,7 +18,6 @@ int main (int argc, char **argv) {
   string host = LOCALHOST; // Default host
   string command;
   string parameter;
-  vector<string> commandToRun;
   bool resp = true;
   int port = PORT; // Default port
   int socket;
@@ -47,13 +48,17 @@ int main (int argc, char **argv) {
 
   socket = c->loginServer(hostConn, port, user);
 
+  thread commandLoopThread = thread(&commandLoop, user, c);
+  thread inotifyThread = thread(&inotifyEvent, user);
+  thread syncDirThread = thread(&syncDirLoop, user);
+
   showMenu();
-  while(resp) {
+  while(TRUE) {
     commandToRun = getUserCommand();
-    command = commandToRun.front();
-    parameter = commandToRun.back();
-    resp = proc->managerCommands(command, parameter, user, port, hostConn, socket);
+    if (commandToRun.getCommand() == EXIT) { }
+    user.addClientAction(commandToRun);
   }
+
   delete[] hostConn;
 
   exit(TRUE);

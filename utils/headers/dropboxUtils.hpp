@@ -1,4 +1,6 @@
 #pragma once
+
+#include "../../client/headers/clientUser.hpp"
 #include <string>
 
 #define UNDEF -1 // not specified informationC
@@ -68,4 +70,6 @@ using namespace std;
 void throwError (char* errorMessage);
 void getClientFolderPath(string folderPath);
 unsigned int fileSize(string filePath);
-void *inotifyEvent(void*);
+void inotifyEvent(ClientUser user);
+void commandLoop(ClientUser user);
+void syncDirLoop(ClientUser user);

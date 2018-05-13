@@ -29,7 +29,29 @@ unsigned int fileSize(string filePath) {
   return len;
 }
 
-void *inotifyEvent(void*) {
+void commandLoop(ClientUser user, ClientCommunication com){
+  while(TRUE){
+    Process* proc = new Process();
+    ClientAction commandToRun = user.getClientAction();
+    resp = proc->managerCommands(commandToRun.getCommand(),
+                                 commandToRun.getParameter(),
+                                 user,
+                                 com.getPort(),
+                                 com.getIp(),
+                                 com.getSocketDesc()
+           );
+    }
+}
+
+
+void syncDirLoop(ClientUser user){
+  while(TRUE){
+    //wait(10);
+    addClientAction(ClientAction(GET_SYNC_DIR));
+  }
+}
+
+void inotifyEvent(ClientUser user) {
   int init;
   int watchedFolder;
   int i;
