@@ -28,6 +28,7 @@ bool Process::managerCommands(
   string host,
   int socketDesc
 ) {
+  int status;
   int resp;
   if (command.compare(UPLOAD) == 0) {
     resp = upload(parameter, user, port, host, socketDesc);
@@ -35,11 +36,11 @@ bool Process::managerCommands(
       resp = download(parameter, user, host, port, socketDesc);
   } else if (command.compare(LIST_SERVER) == 0) {
       resp = listServer(user, port, host, socketDesc);
-  } else if (command.compare(LIST_CLIENT) == 0) {
+  } else if (command.compare(LIST_CLIENT) == EQUAL) {
       resp = listClient(user, port, host, socketDesc);
-  } else if (command.compare(GET_SYNC_DIR) == 0) {
+  } else if (command.compare(GET_SYNC_DIR) == EQUAL) {
       resp = getSyncDir(user);
-  } else if (command.compare(EXIT_APP) == 0) {
+  } else if (command.compare(EXIT_APP) == EQUAL) {
       resp = exitApp(user);
       if (resp == EXIT_OPT_YES) {
         //string clientRequest = "[Client Request]: Log off user";
@@ -332,10 +333,49 @@ int Process::download(string fileName, ClientUser* user, string host, int port, 
 }
 
 int Process::listServer(ClientUser* user, int port, string host, int socketDesc) {
-  //string clientRequest = "[Client Request]: List files on the server side";
-  //writeToSocket(clientRequest, socketDesc, host, port);
-  Folder* procFolder = new Folder();
-  procFolder->listFiles(SERVER_LIST, user->getUserId());
+  const char *hostChar = host.c_str();
+  struct hostent *server;
+  server = gethostbyname(hostChar);
+  struct sockaddr_in serverAddress;
+  struct sockaddr_in from;
+  char listFromServer[CHUNCK_SIZE];
+  unsigned int lenSckAddr;
+
+  serverAddress.sin_family = AF_INET; // IPv4
+  serverAddress.sin_port = htons(port);
+  serverAddress.sin_addr = *((struct in_addr *)server->h_addr);
+  bzero(&(serverAddress.sin_zero), BYTE_IN_BITS);
+
+  // Send the request for getting the server list
+  int status = sendto(
+    socketDesc,
+    LIST_SERVER,
+    CHUNCK_SIZE,
+    0,
+    (const struct sockaddr *) &serverAddress,
+    sizeof(struct sockaddr_in)
+  );
+  if (status < 0) {
+    throwError("Error on sending message");
+  }
+
+    status = recvfrom(
+      socketDesc,
+      listFromServer,
+      CHUNCK_SIZE,
+      MSG_OOB,
+      (struct sockaddr *) &from,
+      &lenSckAddr
+    );
+    if (status < 0) {
+      throwError("[Process::listServer]: Error on receive ack");
+    }
+
+
+
+
+  cout << listFromServer;
+
 }
 
 int Process::listClient(ClientUser* user, int port, string host, int socketDesc) {

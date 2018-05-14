@@ -91,6 +91,8 @@ int ClientCommunication::loginServer(char* ip, int port, ClientUser* user) {
   folder->createFolder(clientFolderPath);
   folder->createFolder(serverFolderPath);
 
+  //string clientMessage = user->getUserId();
+  //writeToSocket(clientMessage, socketDesc, ip, port);
   string message = "[Client Login]: User " + user->getUserId()
       + " has logged in via the socket " + to_string(socketDesc);
   message.copy(userInfo.message, message.length(), 0);
