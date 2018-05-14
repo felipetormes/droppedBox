@@ -1,5 +1,6 @@
 #pragma once
 
+#include "../headers/process.hpp"
 #include "../../client/headers/clientUser.hpp"
 #include "../../client/headers/clientCommunication.hpp"
 

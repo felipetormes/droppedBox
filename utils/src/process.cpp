@@ -10,6 +10,7 @@
 #include <string.h>
 #include <pwd.h>
 
+#include "../../client/headers/clientUser.hpp"
 #include "../headers/process.hpp"
 #include "../headers/ui.hpp"
 #include "../headers/udpUtils.hpp"
