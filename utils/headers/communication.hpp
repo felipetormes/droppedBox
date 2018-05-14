@@ -1,3 +1,5 @@
+#pragma once
+
 class Communication {
   protected:
     int scktDesc;

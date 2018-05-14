@@ -38,12 +38,12 @@ vector<string> parseUserCommand(const string& input, const string& separator) {
 }
 
 
-ClientAction getUserCommand() {
+ClientAction* getUserCommand() {
   vector<string> commandWithParameter;
   string wholeCommand;
   cout << endl << PREFIX << " ";
   getline(cin, wholeCommand);
   commandWithParameter = parseUserCommand(wholeCommand, " ");
-  ClientAction action(commandWithParameter[0], commandWithParameter[1]);
+  ClientAction* action = new ClientAction(commandWithParameter[0], commandWithParameter[1]);
   return action;
 }

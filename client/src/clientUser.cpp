@@ -11,14 +11,14 @@ ClientUser::() {
 
 }
 
-ClientUser::addClientAction(ClientAction action) {
+ClientUser::addClientAction(ClientAction* action) {
   this.actionsMutex.lock();
   this.actionsQueue.push(action);
   this.actionsMutex.unlock();
 }
 
-ClientUser::getClientAction() {
-  ClientAction action;
+ClientAction* ClientUser::getClientAction() {
+  ClientAction* action;
   this.actionsMutex.lock();
   action = this.actionsQueue.pop();
   this.actionsMutex.unlock();

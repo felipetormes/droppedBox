@@ -28,22 +28,6 @@ using namespace std;
      sendto
      recvfrom
    close socket */
-ClientCommunication::getPort() {
-  return this.port;
-}
-
-ClientCommunication::getSocketDescriptor() {
-  return this.socketDescriptor
-}
-
-ClientCommunication::getIp() {
-  return this->ip;
-}
-
-ClientCommunication::ClientCommunication() {
-  this->port =  PORT;
-  this->ip = LOCALHOST;
-}
 
 // Create a communication in localhost:port with IPv4
 ClientCommunication::ClientCommunication(int port) {
@@ -56,6 +40,24 @@ ClientCommunication::ClientCommunication(char* ip, int port) {
   this->port = port;
   this->ip = ip;
 }
+
+ClientCommunication::ClientCommunication() {
+  this->port =  PORT;
+  this->ip = LOCALHOST;
+}
+
+int ClientCommunication::getPort() {
+  return this->port;
+}
+
+int ClientCommunication::getSocketDesc() {
+  return this->socketDescriptor;
+}
+
+char* ClientCommunication::getIp() {
+  return this->ip;
+}
+
 
 /* Function that logs a user in and creates a socket. In addition, it returns
  * the socket descriptor for trading messages throughtout the application,

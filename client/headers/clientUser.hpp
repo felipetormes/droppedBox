@@ -8,7 +8,7 @@
 #include "../../utils/headers/device.hpp"
 #include "../../utils/fileSystem/headers/folder.hpp"
 #include "../../utils/headers/dropboxUtils.hpp"
-#include "../../utils/headers/actions.hpp"
+#include "../../utils/headers/action.hpp"
 
 using namespace std;
 
@@ -27,8 +27,8 @@ class ClientUser {
     ClientUser(string userId, Device *device, Folder *userFolder, int numberOfFiles);
 
     queue<ClientAction> actionsQueue;
-    void addClientAction();
-    ClientAction getClientAction();
+    void addClientAction(ClientAction* action);
+    ClientAction* getClientAction();
 
     string getUserId();
     Folder* getUserFolder();
@@ -38,5 +38,5 @@ class ClientUser {
     void setUserFolder(Folder* userFolder);
     void sync();
     bool isSynchronized();
-    ClientAction getUserCommand();
+    ClientAction* getUserCommand();
 };

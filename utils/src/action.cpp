@@ -2,14 +2,16 @@
 
 using namespace std;
 
+ClientAction::~ClientAction(){}
+
 ClientAction::ClientAction(string command){
-  this.command = command;
-  this.parameter = NULL;
+  this->command = command;
+  this->parameter = "";
 }
 
 ClientAction::ClientAction(string command, string parameter){
-  this.command = command;
-  this.parameter = parameter;
+  this->command = command;
+  this->parameter = parameter;
 }
 
 string ClientAction::getCommand(){

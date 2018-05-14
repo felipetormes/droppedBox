@@ -4,6 +4,9 @@
 #include <unistd.h>
 #include <string.h>
 #include "../headers/dropboxUtils.hpp"
+#include "../../client/headers/clientUser.hpp"
+#include "../../client/headers/clientCommunication.hpp"
+
 
 using namespace std;
 string clientFolderPath;
@@ -29,29 +32,35 @@ unsigned int fileSize(string filePath) {
   return len;
 }
 
-void commandLoop(ClientUser user, ClientCommunication com){
+void commandLoop(ClientUser* user, ClientCommunication* com){
   while(TRUE){
     Process* proc = new Process();
-    ClientAction commandToRun = user.getClientAction();
-    resp = proc->managerCommands(commandToRun.getCommand(),
-                                 commandToRun.getParameter(),
-                                 user,
-                                 com.getPort(),
-                                 com.getIp(),
-                                 com.getSocketDesc()
-           );
+    ClientAction* commandToRun = user->getClientAction();
+    string command = commandToRun->getCommand();
+    string parameter = commandToRun->getParameter();
+    int port = com->getPort();
+    char* ip = com->getIp();
+    int socket = com->getSocketDesc();
+
+    int resp = proc->managerCommands(command,
+                                     parameter,
+                                     user,
+                                     port,
+                                     ip,
+                                     socket);
+    if (!resp) {break;}
     }
 }
 
 
-void syncDirLoop(ClientUser user){
+void syncDirLoop(ClientUser* user){
   while(TRUE){
     //wait(10);
-    addClientAction(ClientAction(GET_SYNC_DIR));
+    //user.addClientAction(ClientAction(GET_SYNC_DIR));
   }
 }
 
-void inotifyEvent(ClientUser user) {
+void inotifyEvent(ClientUser* user) {
   int init;
   int watchedFolder;
   int i;

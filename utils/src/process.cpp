@@ -20,14 +20,13 @@ Process::~Process() {
   cout << "Destroying process..." << endl;
 }
 
-bool Process::managerCommands(
-  string command,
-  string parameter,
-  ClientUser* user,
-  int port,
-  string host,
-  int socketDesc
-) {
+bool Process::managerCommands(string command,
+                              string parameter,
+                              ClientUser* user,
+                              int port,
+                              string host,
+                              int socketDesc
+                              ) {
   int resp;
   if (command.compare(UPLOAD) == 0) {
     resp = upload(parameter, user, port, host, socketDesc);
