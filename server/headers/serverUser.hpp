@@ -1,3 +1,4 @@
+#pragma once
 #include <string>
 #include <vector>
 #include <mutex>
@@ -15,9 +16,7 @@ class ServerUser {
     vector<Device*> devices; // Vector of devices
   public:
     Folder *folderPath;
-    ServerUser () {}; // Default constructor
-    ServerUser (string userid, Folder *folderPath);
-    ServerUser (string userid, Folder *folderPath, Device* device);
+    ServerUser (string userid);
 
     string getUserId();
     Folder* getUserFolder();
@@ -25,4 +24,6 @@ class ServerUser {
     bool thereAreNoDevices();
     void delDevice(Device* device);
     void addDevice(Device* device);
+    void startThread();
+    void serverThread();
 };

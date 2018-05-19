@@ -1,5 +1,6 @@
 #include "../headers/dropboxServer.hpp"
 #include "../headers/serverCommunication.hpp"
+#include "../headers/serverUser.hpp"
 #include "../../settings/config.hpp"
 #include "../../utils/headers/dropboxUtils.hpp"
 #include "../../utils/headers/udpUtils.hpp"
@@ -40,48 +41,53 @@ int main (int argc, char* argv[]) {
     throwError("[Server]: Invalid use of the application");
   }
 
-  int status, socketDesc = 0;
-  socklen_t clilen;
-  struct sockaddr_in serverAddress;
-  struct sockaddr_in clientAddress;
-  UserInfo userInfo = {};
+  while(true) {
+    int status, socketDesc = 0;
+    socklen_t clilen = sizeof(struct sockaddr_in);
+    struct sockaddr_in serverAddress;
+    struct sockaddr_in clientAddress;
+    UserInfo userInfo = {};
 
-  socketDesc = openSocket();
+    socketDesc = openSocket();
 
-  serverAddress.sin_family = AF_INET;
-  serverAddress.sin_port = htons(port);
-  serverAddress.sin_addr.s_addr = INADDR_ANY;
-  bzero(&(serverAddress.sin_zero), BYTE_IN_BITS);
+    serverAddress.sin_family = AF_INET;
+    serverAddress.sin_port = htons(port);
+    serverAddress.sin_addr.s_addr = INADDR_ANY;
+    bzero(&(serverAddress.sin_zero), BYTE_IN_BITS);
 
-  if (bind (
-      socketDesc,
-      (struct sockaddr *) &serverAddress,
-      sizeof(struct sockaddr)
-    ) < 0
-  ) {
-    throwError("[Server]: Error on on binding");
-  }
-
-  status = recvfrom(
-    socketDesc,
-    &userInfo,
-    sizeof(userInfo),
-    MSG_OOB,
-    (struct sockaddr *) &clientAddress,
-    &clilen
-  );
-  if (status < 0) {
-    throwError("[Server]: Error on recvfrom");
-  }
-
-  //while(true) {
+    if (bind (
+        socketDesc,
+        (struct sockaddr *) &serverAddress,
+        sizeof(struct sockaddr)
+      ) < 0
+    ) {
+      throwError("[Server]: Error on on binding");
+    }
     //waits for the first message
+    status = recvfrom(
+      socketDesc,
+      &userInfo,
+      sizeof(userInfo),
+      MSG_OOB,
+      (struct sockaddr *) &clientAddress,
+      &clilen
+    );
+    if (status < 0) {
+      throwError("[Server]: Error on recvfrom");
+    }
     //check client info
     //creates a thread
-    // makes a new serverCommunication
-  //}
+    std::cout << "/* message */" << '\n';
+    ServerUser* user = new ServerUser("ana");
+    user->startThread();
 
-  ServerCommunication* s = new ServerCommunication();
-  s->serverComm(port, socketDesc, (socklen_t)clilen);
+
+    // makes a new serverCommunication
+    cout << userInfo.message << endl;
+
+    ServerCommunication* s = new ServerCommunication();
+    s->serverComm(port, socketDesc, (socklen_t)clilen);
+  }
+
   return 0;
 }

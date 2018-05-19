@@ -1,3 +1,4 @@
+#pragma once
 #include <mutex>
 #define CLOSE 0 // Closing state
 #define EXEC 1 // Executing state
