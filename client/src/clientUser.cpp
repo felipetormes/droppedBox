@@ -28,30 +28,37 @@ void ClientUser::startThreads(){
 
 void ClientUser::syncDirLoop() {
   usleep(10000000); //10 seconds
-  cout << "ITS ALIVE! sync" << endl;
+//  cout << "ITS ALIVE! sync" << endl;
   while(TRUE);
 }
 
 void ClientUser::commandLoop() {
-  cout << "ITS ALIVE! command" << endl;
+  //cout << "ITS ALIVE! command" << endl;
   while(TRUE);
 }
 
 void ClientUser::userLoop() {
   int resp = !EXIT;
-  string command, parameter;
-  vector<string> commandToRun;
+  string command, parameter, ip = this->ip;
+  vector<string> commandToRun, wholeCommand;
+  Process* proc = new Process();
+  //ClientUser* user = new ClientUser(this->userId, this->userFolder, this->ip, this->port);
   showMenu();
   while(resp != EXIT) {
     commandToRun = getUserCommand();
-    command = commandToRun.front();
-    parameter = commandToRun.back();
-    cout << command << endl;
+    addCommandToQueue(commandToRun);
+    wholeCommand = getCommandFromQueue();
+    command = wholeCommand.front();
+    parameter = wholeCommand.back();
+    //cout << command << endl;
+    //cout << parameter << endl;
+
+    resp = proc->managerCommands(command, parameter, this, this->port, ip, this->socketDescriptor);
   };
 }
 
 void ClientUser::inotifyEvent() {
-  cout << "inotify" << endl;
+  //cout << "inotify" << endl;
   int init;
   int i;
   int watchedFolder;
@@ -60,7 +67,7 @@ void ClientUser::inotifyEvent() {
 
   string folderStr = this->userFolder->getHome();
   folderStr += "/sync_dir_" + this->userId;
-  cout << folderStr << endl;
+  //cout << folderStr << endl;
 
   char folder[CHUNCK_SIZE];
   folderStr.copy(folder, folderStr.length(), 0);
@@ -77,7 +84,7 @@ void ClientUser::inotifyEvent() {
   }
 
   while(TRUE) {
-    cout << "inotifyTRUE" << endl;
+    //cout << "inotifyTRUE" << endl;
     i = 0;
     length = read(init, buffer, EVENT_BUF_LEN);
 
@@ -189,9 +196,9 @@ vector<string> ClientUser::getUserCommand() {
   char string[256];
   cout << endl << PREFIX << " ";
   fflush(stdin);
-  scanf("%s\n", string);
-  wholeCommand = string;
+  //scanf("%s\n", string);
+  getline(cin, wholeCommand);
+  //wholeCommand = string;
   commandWithParameter = parseUserCommand(wholeCommand, " ");
-  addCommandToQueue(commandWithParameter);
   return commandWithParameter;
 }
