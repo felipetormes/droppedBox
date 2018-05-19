@@ -191,5 +191,6 @@ vector<string> ClientUser::getUserCommand() {
   scanf("%s\n", string);
   wholeCommand = string;
   commandWithParameter = parseUserCommand(wholeCommand, " ");
+  addCommandToQueue(commandWithParameter);
   return commandWithParameter;
 }
