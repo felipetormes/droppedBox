@@ -188,6 +188,7 @@ vector<string> ClientUser::getUserCommand() {
   string wholeCommand;
   char string[256];
   cout << endl << PREFIX << " ";
+  fflush(stdin);
   scanf("%s\n", string);
   wholeCommand = string;
   commandWithParameter = parseUserCommand(wholeCommand, " ");
