@@ -8,7 +8,6 @@
 #include <sys/types.h>
 #include <stdlib.h>
 #include <unistd.h>
-#include <sys/socket.h>
 #include <netinet/in.h>
 #include <string.h>
 #include <netdb.h>
@@ -23,11 +22,9 @@ ServerCommunication::ServerCommunication() {
   setLoggedUser("");
 }
 
-void ServerCommunication::serverComm(int port) {
-  int socketDesc, itr = 1, status, lastChunck = 0;
-  socklen_t clilen;
-  struct sockaddr_in serverAddress;
+void ServerCommunication::serverComm(int port, int socketDesc, socklen_t clilen) {
   struct sockaddr_in clientAddress;
+  int itr = 1, status, lastChunck = 0;
   Datagram receiveChunck;
   Datagram sendChunck;
   UserInfo userInfo = {};
@@ -42,25 +39,6 @@ void ServerCommunication::serverComm(int port) {
   string filePathDB;
   const char *filePathDBChar;
 
-  // Open socket
-	socketDesc = openSocket();
-
-  serverAddress.sin_family = AF_INET;
-  serverAddress.sin_port = htons(port);
-  serverAddress.sin_addr.s_addr = INADDR_ANY;
-  bzero(&(serverAddress.sin_zero), BYTE_IN_BITS);
-
-  if (bind (
-      socketDesc,
-      (struct sockaddr *) &serverAddress,
-      sizeof(struct sockaddr)
-    ) < 0
-  ) {
-    throwError("[ServerCommunication::ServerCommunication]: Error on on binding");
-  }
-
-  clilen = sizeof(struct sockaddr_in);
-  //sprintf(buffer, "%s", "message");
   Folder* folder = new Folder("");
   folder->createFolder("db/");
   folder->createFolder("db/clients");

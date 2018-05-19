@@ -25,7 +25,7 @@ void ClientUser::startThreads(){
 }
 
 void ClientUser::syncDirLoop() {
-  usleep(10000000); //10 seconds
+  usleep(3000000); //3 seconds
   cout << "ITS ALIVE! sync" << endl;
   while(TRUE);
 }
