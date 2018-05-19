@@ -38,5 +38,5 @@ void ServerUser::serverThread () {
 
 void ServerUser::startThread() {
   std::thread someThread = std::thread(&ServerUser::serverThread, this);
-  someThread.join();
+  someThread.detach();
 }

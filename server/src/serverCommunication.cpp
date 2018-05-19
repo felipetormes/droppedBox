@@ -40,8 +40,6 @@ void ServerCommunication::serverComm(int port, int socketDesc, socklen_t clilen)
   const char *filePathDBChar;
 
   Folder* folder = new Folder("");
-  folder->createFolder("db/");
-  folder->createFolder("db/clients");
 
   // Receive clients' requests
   while (TRUE) {

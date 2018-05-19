@@ -41,6 +41,10 @@ int main (int argc, char* argv[]) {
     throwError("[Server]: Invalid use of the application");
   }
 
+  Folder* folder = new Folder("");
+  folder->createFolder("db/");
+  folder->createFolder("db/clients");
+
   while(true) {
     int status, socketDesc = 0;
     socklen_t clilen = sizeof(struct sockaddr_in);
@@ -63,7 +67,7 @@ int main (int argc, char* argv[]) {
     ) {
       throwError("[Server]: Error on on binding");
     }
-    //waits for the first message
+
     status = recvfrom(
       socketDesc,
       &userInfo,
@@ -77,10 +81,8 @@ int main (int argc, char* argv[]) {
     }
     //check client info
     //creates a thread
-    std::cout << "/* message */" << '\n';
-    ServerUser* user = new ServerUser("ana");
+    ServerUser* user = new ServerUser("ana"); //TODO change to general case
     user->startThread();
-
 
     // makes a new serverCommunication
     cout << userInfo.message << endl;
