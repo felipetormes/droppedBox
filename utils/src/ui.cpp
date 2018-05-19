@@ -8,7 +8,7 @@
 using namespace std;
 
 void showMenu () {
-  cout << "********************** DroppedBox *********************" << endl
+  cout << "********************** DroppedBox *********************" << "\n"
        << "Type HELP for obtaiing help with the available commands" << endl << endl;
 }
 
@@ -34,15 +34,5 @@ vector<string> parseUserCommand(const string& input, const string& separator) {
     if (!token.empty()) commandWithParameter.push_back(token);
       previous = position + separator.length();
   } while (position < input.length() && previous < input.length());
-  return commandWithParameter;
-}
-
-
-vector<string> getUserCommand() {
-  vector<string> commandWithParameter;
-  string wholeCommand;
-  cout << endl << PREFIX << " ";
-  getline(cin, wholeCommand);
-  commandWithParameter = parseUserCommand(wholeCommand, " ");
   return commandWithParameter;
 }

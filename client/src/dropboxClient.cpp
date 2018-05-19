@@ -43,15 +43,15 @@ int main (int argc, char **argv) {
   user->startThreads();
 
   Process* proc = new Process();
-  
-  showMenu();
-  while(resp != EXIT) {
-    fflush(stdin);
-    commandToRun = getUserCommand();
-    command = commandToRun.front();
-    parameter = commandToRun.back();
-    resp = proc->managerCommands(command, parameter, user, port, hostConn, socket);
-  }
+
+  // showMenu();
+  // while(resp != EXIT) {
+  //   fflush(stdin);
+  //   commandToRun = getUserCommand();
+  //   command = commandToRun.front();
+  //   parameter = commandToRun.back();
+  //   resp = proc->managerCommands(command, parameter, user, port, hostConn, socket);
+  // }
   delete[] hostConn;
 
   exit(TRUE);

@@ -7,8 +7,6 @@
 #include <string>
 
 #include "../headers/clientUser.hpp"
-#include "../../utils/headers/ui.hpp"
-#include "../../utils/headers/dropboxUtils.hpp"
 using namespace std;
 
 ClientUser::ClientUser(string userId, Folder *userFolder, char* ip, int port) {
@@ -24,7 +22,7 @@ void ClientUser::startThreads(){
   thread syncDirThread = thread(&ClientUser::syncDirLoop, this);
   thread userLoop = thread(&ClientUser::userLoop, this);
   thread commandLoopThread = thread(&ClientUser::commandLoop, this);
-  inotifyThread.join();
+  //inotifyThread.join();
   userLoop.join();
 }
 
@@ -40,15 +38,14 @@ void ClientUser::commandLoop() {
 }
 
 void ClientUser::userLoop() {
-  cout << "ITS ALIVE! user" << endl;
-  int resp;
-  string command;
+  int resp = !EXIT;
+  string command, parameter;
   vector<string> commandToRun;
   showMenu();
   while(resp != EXIT) {
-    //commandToRun = getUserCommand();
+    commandToRun = getUserCommand();
     command = commandToRun.front();
-    //parameter = commandToRun.back();
+    parameter = commandToRun.back();
     cout << command << endl;
   };
 }
@@ -184,4 +181,15 @@ int ClientUser::loginServer() {
   writeToSocket(userInfo, socketDesc, ip, port);
 
   return socketDesc;
+}
+
+vector<string> ClientUser::getUserCommand() {
+  vector<string> commandWithParameter;
+  string wholeCommand;
+  char string[256];
+  cout << endl << PREFIX << " ";
+  scanf("%s\n", string);
+  wholeCommand = string;
+  commandWithParameter = parseUserCommand(wholeCommand, " ");
+  return commandWithParameter;
 }
