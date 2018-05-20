@@ -91,7 +91,6 @@ void ClientUser::inotifyEvent() {
       if(!fileExists(pathname) && notTempFile) {
         command = DELETE_FILE;
         parameter = event->name;
-        vector<string> commandToRun;
         commandToRun.push_back(command);
         commandToRun.push_back(parameter);
         addCommandToQueue(commandToRun);
