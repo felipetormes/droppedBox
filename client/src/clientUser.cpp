@@ -32,11 +32,14 @@ void ClientUser::startThreads(){
 }
 
 void ClientUser::syncDirLoop() {
+  vector<string> commandToRun;
+  string command = GET_SYNC_DIR;
+  string parameter = "";
+  commandToRun.push_back(command);
+  commandToRun.push_back(parameter);
   while(true) {
-    const char* command[] = {GET_SYNC_DIR, ""};
-    vector<string> commandToRun(command, command+2);
-    addCommandToQueue(commandToRun);
     usleep(10000000); //10 seconds
+    addCommandToQueue(commandToRun);
   }
 }
 
@@ -44,15 +47,20 @@ void ClientUser::commandLoop() {
   int resp = !EXIT;
   vector<string> command;
   Process* proc = new Process();
+  printf("COMMAND LOOP  1\n");
   while(TRUE){
     command = getCommandFromQueue();
-    resp = proc->managerCommands(command.front(),
-                                 command.back(),
-                                 this,
-                                 this->port,
-                                 ip,
-                                 this->socketDescriptor
-    );
+    if(!command.empty()) {
+      printf("COMMAND LOOP  2\n");
+      resp = proc->managerCommands(command.front(),
+                                   command.back(),
+                                   this,
+                                   this->port,
+                                   ip,
+                                   this->socketDescriptor
+      );
+    }
+    usleep(200000); //0.2 sec
   }
 }
 
@@ -62,6 +70,7 @@ void ClientUser::userLoop() {
   showMenu();
   while(TRUE) {
     commandToRun = getUserCommand();
+    printf("USER LOOP\n");
     addCommandToQueue(commandToRun);
   };
 }
@@ -109,8 +118,6 @@ void ClientUser::inotifyEvent() {
         if (notTempFile && threIsThisFile) {
           command = UPLOAD;
           parameter = event->name;
-          string command = GET_SYNC_DIR;
-          string parameter = "";
           vector<string> commandToRun;
           commandToRun.push_back(command);
           commandToRun.push_back(parameter);
@@ -127,17 +134,21 @@ void ClientUser::inotifyEvent() {
 }
 
 vector<string> ClientUser::getCommandFromQueue() {
-  this->commandAllocation.wait();
+  //this->commandAllocation.wait();
+  vector<string> c;
   this->commandMutex.lock();
-  vector<string> c = this->commandQueue.front();
-  this->commandQueue.pop();
+  if(!this->commandQueue.empty()){
+    c = this->commandQueue.front();
+    printf("%s\n", c.front());
+    this->commandQueue.pop();
+  }
   this->commandMutex.unlock();
   return c;
 }
 
 void ClientUser::addCommandToQueue(vector<string> command) {
+  //this->commandAllocation.post();
   this->commandMutex.lock();
-  this->commandAllocation.post();
   this->commandQueue.push(command);
   this->commandMutex.unlock();
 }
