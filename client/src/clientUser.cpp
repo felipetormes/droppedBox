@@ -103,8 +103,8 @@ void ClientUser::inotifyEvent() {
         notTempFile = (event->name[0] != '.') && (event->name[strlen(event->name) - 1] != '~');
         threIsThisFile = fileExists(pathname);
         if (notTempFile && threIsThisFile) {
-          command = GET_SYNC_DIR;
-          parameter = "";
+          command = UPLOAD;
+          parameter = event->name;
           vector<string> commandToRun;
           commandToRun.push_back(command);
           commandToRun.push_back(parameter);
