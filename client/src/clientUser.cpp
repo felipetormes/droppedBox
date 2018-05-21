@@ -37,6 +37,7 @@ void ClientUser::syncDirLoop() {
   string parameter = "";
   commandToRun.push_back(command);
   commandToRun.push_back(parameter);
+  puts(commandToRun.front());
   while(true) {
     usleep(10000000); //10 seconds
     addCommandToQueue(commandToRun);
@@ -50,7 +51,6 @@ void ClientUser::commandLoop() {
   printf("COMMAND LOOP  1\n");
   while(TRUE){
     command = getCommandFromQueue();
-    if(!command.empty()) {
       printf("COMMAND LOOP  2\n");
       resp = proc->managerCommands(command.front(),
                                    command.back(),
@@ -59,7 +59,6 @@ void ClientUser::commandLoop() {
                                    ip,
                                    this->socketDescriptor
       );
-    }
     usleep(200000); //0.2 sec
   }
 }
@@ -134,22 +133,25 @@ void ClientUser::inotifyEvent() {
 }
 
 vector<string> ClientUser::getCommandFromQueue() {
-  //this->commandAllocation.wait();
+  this->commandAllocation.wait();
   vector<string> c;
+  printf("Fila tem %d elementos.\n", commandQueue.size());
   this->commandMutex.lock();
-  if(!this->commandQueue.empty()){
-    c = this->commandQueue.front();
-    printf("%s\n", c.front());
-    this->commandQueue.pop();
-  }
+  c = this->commandQueue.front();
+  cout << c[0] << endl;
+  this->commandQueue.pop();
+  printf("Fila agora tem %d elementos.\n", commandQueue.size());
   this->commandMutex.unlock();
   return c;
 }
 
 void ClientUser::addCommandToQueue(vector<string> command) {
-  //this->commandAllocation.post();
+  this->commandAllocation.post();
   this->commandMutex.lock();
+  printf("Fila agora tem %d elementos.\n", this->commandQueue.size());
   this->commandQueue.push(command);
+  printf("Comando adicionado a fila: %s\n", command[0]);
+  printf("Fila agora tem %d elementos.\n", this->commandQueue.size());
   this->commandMutex.unlock();
 }
 
